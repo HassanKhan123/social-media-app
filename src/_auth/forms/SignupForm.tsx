@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,8 +16,10 @@ import Loader from "@/components/shared/Loader";
 import { Link } from "react-router-dom";
 import { createUserAccount } from "@/lib/appwrite/api";
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 
 const SignupForm = () => {
+  const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof SignUpValidationSchema>>({
     resolver: zodResolver(SignUpValidationSchema),
@@ -34,6 +35,10 @@ const SignupForm = () => {
     try {
       setIsLoading(true);
       const newUser = await createUserAccount(values);
+      if (!newUser) {
+        return toast({ title: "Sign up failed. Please try again" });
+      }
+
       console.log(newUser);
       setIsLoading(false);
     } catch (err) {
