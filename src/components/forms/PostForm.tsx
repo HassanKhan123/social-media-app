@@ -13,15 +13,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { PostValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/AuthContext";
-import FileUploader from "@/components/shared/FileUploader";
-import Loader from "@/components/shared/Loader";
-
-import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
+import { FileUploader, Loader } from "@/components/shared";
+import {
+  useCreatePost,
+  useUpdatePost,
+} from "@/lib/react-query/queriesAndMutations";
 
 type PostFormProps = {
   post?: Models.Document;
@@ -45,27 +46,27 @@ const PostForm = ({ post, action }: PostFormProps) => {
   // Query
   const { mutateAsync: createPost, isPending: isLoadingCreate } =
     useCreatePost();
-  //   const { mutateAsync: updatePost, isLoading: isLoadingUpdate } =
-  //     useUpdatePost();
+  const { mutateAsync: updatePost, isPending: isLoadingUpdate } =
+    useUpdatePost();
 
   // Handler
   const handleSubmit = async (value: z.infer<typeof PostValidation>) => {
     // ACTION = UPDATE
-    // if (post && action === "Update") {
-    //   const updatedPost = await updatePost({
-    //     ...value,
-    //     postId: post.$id,
-    //     imageId: post.imageId,
-    //     imageUrl: post.imageUrl,
-    //   });
+    if (post && action === "Update") {
+      const updatedPost = await updatePost({
+        ...value,
+        postId: post.$id,
+        imageId: post.imageId,
+        imageUrl: post.imageUrl,
+      });
 
-    //   if (!updatedPost) {
-    //     toast({
-    //       title: `${action} post failed. Please try again.`,
-    //     });
-    //   }
-    //   return navigate(`/posts/${post.$id}`);
-    // }
+      if (!updatedPost) {
+        toast({
+          title: `${action} post failed. Please try again.`,
+        });
+      }
+      return navigate(`/posts/${post.$id}`);
+    }
 
     // ACTION = CREATE
     const newPost = await createPost({
@@ -167,9 +168,9 @@ const PostForm = ({ post, action }: PostFormProps) => {
           <Button
             type="submit"
             className="shad-button_primary whitespace-nowrap"
-            disabled={isLoadingCreate}
+            disabled={isLoadingCreate || isLoadingUpdate}
           >
-            {isLoadingCreate && <Loader />}
+            {(isLoadingCreate || isLoadingUpdate) && <Loader />}
             {action} Post
           </Button>
         </div>
