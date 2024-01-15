@@ -1,10 +1,9 @@
 import { Models } from "appwrite";
 import { Link } from "react-router-dom";
 
-// import { PostStats } from "@/components/shared";
+import { PostStats } from "@/components/shared";
 import { multiFormatDateString } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
-import PostStats from "./PostStats";
 
 type PostCardProps = {
   post: Models.Document;
@@ -48,8 +47,7 @@ const PostCard = ({ post }: PostCardProps) => {
 
         <Link
           to={`/update-post/${post.$id}`}
-          className={`${user.id !== post.creator.$id && "hidden"}`}
-        >
+          className={`${user.id !== post.creator.$id && "hidden"}`}>
           <img
             src={"/assets/icons/edit.svg"}
             alt="edit"

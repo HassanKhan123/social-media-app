@@ -1,22 +1,14 @@
-import { useUserContext } from "@/context/AuthContext";
-import {
-  useDeleteSavedPost,
-  useGetCurrentUser,
-  useLikePost,
-  useSavePost,
-} from "@/lib/react-query/queriesAndMutations";
-import { checkIsLiked } from "@/lib/utils";
 import { Models } from "appwrite";
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-// import { checkIsLiked } from "@/lib/utils";
-// import {
-//   useLikePost,
-//   useSavePost,
-//   useDeleteSavedPost,
-//   useGetCurrentUser,
-// } from "@/lib/react-query/queriesAndMutations";
+import { checkIsLiked } from "@/lib/utils";
+import {
+  useLikePost,
+  useSavePost,
+  useDeleteSavedPost,
+  useGetCurrentUser,
+} from "@/lib/react-query/queries";
 
 type PostStatsProps = {
   post: Models.Document;
@@ -71,7 +63,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
       return deleteSavePost(savedPostRecord.$id);
     }
 
-    savePost({ userId, postId: post.$id });
+    savePost({ userId: userId, postId: post.$id });
     setIsSaved(true);
   };
 
@@ -81,8 +73,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
 
   return (
     <div
-      className={`flex justify-between items-center z-20 ${containerStyles}`}
-    >
+      className={`flex justify-between items-center z-20 ${containerStyles}`}>
       <div className="flex gap-2 mr-5">
         <img
           src={`${
