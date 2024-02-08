@@ -57,6 +57,7 @@ const SignupForm = () => {
         return;
       }
 
+      //@ts-ignore
       await saveLogs({ userId: newUser?.$id, message: "Account signed up" });
 
       const session = await signInAccount({
@@ -76,6 +77,7 @@ const SignupForm = () => {
 
       if (isLoggedIn) {
         form.reset();
+        //@ts-ignore
         await saveLogs({ userId: newUser?.$id, message: "Account signed in" });
 
         navigate("/");
