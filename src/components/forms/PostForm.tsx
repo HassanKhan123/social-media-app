@@ -20,6 +20,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/AuthContext";
 import { FileUploader, Loader } from "@/components/shared";
 import { useCreatePost, useUpdatePost } from "@/lib/react-query/queries";
+import { useSaveLogs } from "@/lib/react-query/queriesAndMutations";
 
 type PostFormProps = {
   post?: Models.Document;
@@ -45,6 +46,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
     useCreatePost();
   const { mutateAsync: updatePost, isLoading: isLoadingUpdate } =
     useUpdatePost();
+  const { mutateAsync: saveLogs } = useSaveLogs();
 
   // Handler
   const handleSubmit = async (value: z.infer<typeof PostValidation>) => {
@@ -56,6 +58,13 @@ const PostForm = ({ post, action }: PostFormProps) => {
         imageId: post.imageId,
         imageUrl: post.imageUrl,
       });
+
+      if (updatedPost) {
+        await saveLogs({
+          userId: user.id,
+          message: `Post updated ${post.$id}`,
+        });
+      }
 
       if (!updatedPost) {
         toast({
@@ -70,6 +79,10 @@ const PostForm = ({ post, action }: PostFormProps) => {
       ...value,
       userId: user.id,
     });
+
+    if (newPost) {
+      await saveLogs({ userId: user.id, message: "New Post created" });
+    }
 
     if (!newPost) {
       toast({

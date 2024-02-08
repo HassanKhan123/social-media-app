@@ -46,3 +46,8 @@ export type INewUser = {
   username: string;
   password: string;
 };
+
+export type ISaveLogs = {
+  userId: string;
+  message: string;
+};

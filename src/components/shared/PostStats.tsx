@@ -9,6 +9,7 @@ import {
   useDeleteSavedPost,
   useGetCurrentUser,
 } from "@/lib/react-query/queries";
+import { useSaveLogs } from "@/lib/react-query/queriesAndMutations";
 
 type PostStatsProps = {
   post: Models.Document;
@@ -25,6 +26,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
   const { mutate: likePost } = useLikePost();
   const { mutate: savePost } = useSavePost();
   const { mutate: deleteSavePost } = useDeleteSavedPost();
+  const { mutateAsync: saveLogs } = useSaveLogs();
 
   const { data: currentUser } = useGetCurrentUser();
 
@@ -51,6 +53,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
 
     setLikes(likesArray);
     likePost({ postId: post.$id, likesArray });
+    saveLogs({ userId, message: `Liked Post ${post.$id}` });
   };
 
   const handleSavePost = (
@@ -64,6 +67,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
     }
 
     savePost({ userId: userId, postId: post.$id });
+    saveLogs({ userId, message: `Saved Post ${post.$id}` });
     setIsSaved(true);
   };
 

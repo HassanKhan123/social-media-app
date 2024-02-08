@@ -1,7 +1,13 @@
 import { ID, Query } from "appwrite";
 
 import { appwriteConfig, account, databases, storage, avatars } from "./config";
-import { IUpdatePost, INewPost, INewUser, IUpdateUser } from "@/types";
+import {
+  IUpdatePost,
+  INewPost,
+  INewUser,
+  IUpdateUser,
+  ISaveLogs,
+} from "@/types";
 
 // ============================================================
 // AUTH
@@ -542,5 +548,23 @@ export async function updateUser(user: IUpdateUser) {
     return updatedUser;
   } catch (error) {
     console.log(error);
+  }
+}
+
+// ============================== SAVE LOGS
+export async function saveLogs(data: ISaveLogs) {
+  try {
+    return await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.logsCollectionId,
+      ID.unique(),
+      {
+        userId: data.userId,
+        message: data.message,
+      }
+    );
+  } catch (error) {
+    console.log(error);
+    throw Error;
   }
 }
